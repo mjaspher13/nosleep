@@ -30,13 +30,19 @@ jobs:
       - name: Build Windows app
         run: flutter build windows
 
-      - name: Create ZIP of the built executable
-        shell: pwsh
-        run: |
-          Compress-Archive -Path build/windows/x64/runner/Release/no_sleep_app.exe -DestinationPath build/windows/x64/runner/Release/no_sleep_app.zip
+      - name: Install 7-Zip
+        run: choco install -y 7zip
 
-      - name: List directory contents
-        run: dir build/windows/x64/runner/Release
+      - name: Create ZIP of the built executable
+        run: 7z a build/windows/x64/runner/Release/no_sleep_app.zip build/windows/x64/runner/Release/no_sleep_app.exe
+
+      - name: Verify ZIP file
+        run: |
+          if (Test-Path build/windows/x64/runner/Release/no_sleep_app.zip) {
+            Write-Host "ZIP creation successful: no_sleep_app.zip found"
+          } else {
+            Write-Error "ZIP creation failed: no_sleep_app.zip not found"
+          }
         shell: pwsh
 
       - name: Upload Build Artifacts
