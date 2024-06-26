@@ -41,12 +41,13 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const tag = `v${new Date().toISOString().split('T')[0].replace(/-/g, '.')}.1`;
-            const { data: ref } = await github.git.createRef({
+            const response = await github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
               ref: `refs/tags/${tag}`,
               sha: context.sha,
             });
+            console.log(response);
             return { tag: tag };
 
       - name: Create Release
