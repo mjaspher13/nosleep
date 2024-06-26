@@ -31,4 +31,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: build-windows
-          path: build/windows/runner/Release/
+          path: build/windows/x64/runner/Release/no_sleep_app.exe  # Correct the path
