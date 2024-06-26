@@ -30,31 +30,24 @@ jobs:
 
       - name: Set up Flutter
         if: steps.cache.outputs.cache-hit != 'true'
-        run: |
-          git clone https://github.com/flutter/flutter.git -b stable ~/flutter
+        uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '3.22.2'  # Specify the latest stable version explicitly
 
       - name: Add Flutter to PATH
-        run: |
-          echo "${{ github.workspace }}/flutter/bin" >> $GITHUB_PATH
-          echo "${{ github.workspace }}/flutter/bin/cache/dart-sdk/bin" >> $GITHUB_PATH
+        run: echo "${{ github.workspace }}/flutter/bin" >> $GITHUB_PATH
 
       - name: Flutter doctor
-        run: |
-          $env:PATH="${{ github.workspace }}\flutter\bin;${{ github.workspace }}\flutter\bin\cache\dart-sdk\bin;$env:PATH"
-          flutter doctor
-        shell: pwsh
+        run: flutter doctor
+        shell: bash
 
       - name: Install dependencies
-        run: |
-          $env:PATH="${{ github.workspace }}\flutter\bin;${{ github.workspace }}\flutter\bin\cache\dart-sdk\bin;$env:PATH"
-          flutter pub get
-        shell: pwsh
+        run: flutter pub get
+        shell: bash
 
       - name: Build Windows app
-        run: |
-          $env:PATH="${{ github.workspace }}\flutter\bin;${{ github.workspace }}\flutter\bin\cache\dart-sdk\bin;$env:PATH"
-          flutter build windows
-        shell: pwsh
+        run: flutter build windows
+        shell: bash
 
       - name: Create ZIP of the built executable
         run: |
