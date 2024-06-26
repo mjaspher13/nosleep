@@ -31,8 +31,9 @@ jobs:
 
       - name: Create ZIP of the built executable
         run: |
-          mkdir -p build/windows/x64/runner/Release/
-          powershell Compress-Archive -Path build/windows/x64/runner/Release/no_sleep_app.exe -DestinationPath build/windows/x64/runner/Release/no_sleep_app.zip
+          if (!(Test-Path -Path build/windows/x64/runner/Release/no_sleep_app.zip)) {
+            Compress-Archive -Path build/windows/x64/runner/Release/no_sleep_app.exe -DestinationPath build/windows/x64/runner/Release/no_sleep_app.zip
+          }
 
       - name: Upload Build Artifacts
         if: github.event_name != 'push' || startsWith(github.ref, 'refs/tags/')
