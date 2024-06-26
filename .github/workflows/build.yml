@@ -35,8 +35,7 @@ jobs:
           flutter-version: '3.22.2'  # Specify the latest stable version explicitly
 
       - name: Add Flutter to PATH
-        run: |
-          echo "${{ github.workspace }}/flutter/bin" >> $GITHUB_PATH
+        run: echo "${{ github.workspace }}/flutter/bin" >> $GITHUB_PATH
 
       - name: Flutter doctor
         run: flutter doctor
@@ -71,25 +70,32 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const tagName = `v${new Date().toISOString().split('T')[0].replace(/-/g, '.')}.1`;
-            try {
-              const ref = await github.rest.git.getRef({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                ref: `tags/${tagName}`
-              });
-              console.log(`Tag ${tagName} already exists`);
-            } catch (error) {
-              if (error.status === 404) {
-                const ref = await github.rest.git.createRef({
+            let version = 1;
+            let tagExists = true;
+            let tagName;
+            while (tagExists) {
+              tagName = `v${new Date().toISOString().split('T')[0].replace(/-/g, '.')}.${version}`;
+              try {
+                await github.rest.git.getRef({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
-                  ref: `refs/tags/${tagName}`,
-                  sha: context.sha,
+                  ref: `tags/${tagName}`
                 });
-                console.log(`Created tag ${tagName}`);
-              } else {
-                throw error;
+                console.log(`Tag ${tagName} already exists`);
+                version++;
+              } catch (error) {
+                if (error.status === 404) {
+                  tagExists = false;
+                  await github.rest.git.createRef({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    ref: `refs/tags/${tagName}`,
+                    sha: context.sha,
+                  });
+                  console.log(`Created tag ${tagName}`);
+                } else {
+                  throw error;
+                }
               }
             }
             return { tag: tagName };
