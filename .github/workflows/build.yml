@@ -35,6 +35,10 @@ jobs:
         run: |
           Compress-Archive -Path build/windows/x64/runner/Release/no_sleep_app.exe -DestinationPath build/windows/x64/runner/Release/no_sleep_app.zip
 
+      - name: List directory contents
+        run: dir build/windows/x64/runner/Release
+        shell: pwsh
+
       - name: Upload Build Artifacts
         if: startsWith(github.ref, 'refs/tags/')
         uses: actions/upload-artifact@v2
