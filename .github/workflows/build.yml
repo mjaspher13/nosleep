@@ -39,19 +39,22 @@ jobs:
           echo "${{ github.workspace }}/flutter/bin/cache/dart-sdk/bin" >> $GITHUB_PATH
 
       - name: Flutter doctor
-        env:
-          PATH: ${{ github.workspace }}/flutter/bin:${{ github.workspace }}/flutter/bin/cache/dart-sdk/bin:${{ env.PATH }}
-        run: flutter doctor
+        run: |
+          $env:PATH="${{ github.workspace }}\flutter\bin;${{ github.workspace }}\flutter\bin\cache\dart-sdk\bin;$env:PATH"
+          flutter doctor
+        shell: pwsh
 
       - name: Install dependencies
-        env:
-          PATH: ${{ github.workspace }}/flutter/bin:${{ github.workspace }}/flutter/bin/cache/dart-sdk/bin:${{ env.PATH }}
-        run: flutter pub get
+        run: |
+          $env:PATH="${{ github.workspace }}\flutter\bin;${{ github.workspace }}\flutter\bin\cache\dart-sdk\bin;$env:PATH"
+          flutter pub get
+        shell: pwsh
 
       - name: Build Windows app
-        env:
-          PATH: ${{ github.workspace }}/flutter/bin:${{ github.workspace }}/flutter/bin/cache/dart-sdk/bin:${{ env.PATH }}
-        run: flutter build windows
+        run: |
+          $env:PATH="${{ github.workspace }}\flutter\bin;${{ github.workspace }}\flutter\bin\cache\dart-sdk\bin;$env:PATH"
+          flutter build windows
+        shell: pwsh
 
       - name: Create ZIP of the built executable
         run: |
