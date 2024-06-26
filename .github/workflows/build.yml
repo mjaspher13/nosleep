@@ -35,14 +35,10 @@ jobs:
           echo "${{ runner.os }}-flutter installed"
 
       - name: Add Flutter to PATH
-        run: echo "${{ runner.os }}-flutter path added"
         shell: bash
         run: |
-          echo "${{ runner.os }}-flutter setup"
           echo "::add-path::${{ github.workspace }}/flutter/bin"
-
-      - name: Flutter doctor
-        run: flutter doctor
+          flutter doctor
 
       - name: Install dependencies
         run: flutter pub get
