@@ -7,6 +7,9 @@ on:
     tags:
       - 'v*.*.*'
 
+permissions:
+  contents: write  # Ensure the workflow has write permissions for contents
+
 jobs:
   build:
     runs-on: windows-latest
@@ -41,14 +44,13 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const tag = `v${new Date().toISOString().split('T')[0].replace(/-/g, '.')}.1`;
-            const response = await github.rest.git.createRef({
+            const { data: ref } = await github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
               ref: `refs/tags/${tag}`,
               sha: context.sha,
             });
-            console.log(response);
-            return { tag: tag };
+            core.setOutput("tag", tag);
 
       - name: Create Release
         if: startsWith(github.ref, 'refs/tags/') || steps.tag.outputs.tag != ''
