@@ -102,6 +102,11 @@ jobs:
           }
         shell: pwsh
 
+      - name: Debug Release URL
+        run: |
+          echo "Release upload URL: ${{ steps.create_release.outputs.upload_url }}"
+        shell: pwsh
+
       - name: Upload Release Asset
         if: steps.create_release.outputs.upload_url != ''
         uses: actions/upload-release-asset@v1
