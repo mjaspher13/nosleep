@@ -93,15 +93,6 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Verify Release Asset Path
-        run: |
-          if (Test-Path build/windows/x64/runner/Release/no_sleep_app.zip) {
-            Write-Host "Release asset path verified: no_sleep_app.zip found"
-          } else {
-            Write-Error "Release asset path verification failed: no_sleep_app.zip not found"
-          }
-        shell: pwsh
-
       - name: Debug Release URL
         run: |
           echo "Release upload URL: ${{ steps.create_release.outputs.upload_url }}"
